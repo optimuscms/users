@@ -46,7 +46,7 @@ class UserServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->controllerNamespace)
              ->group(function () {
-                 Route::middlware('auth:admin')->group(function () {
+                 Route::middleware('auth:admin')->group(function () {
                      Route::get('user', 'AdminUsersController@me');
                      Route::apiResource('users', 'AdminUsersController');
 
