@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Optimus\\Posts\\": "src"
+            "Optimus\\Users\\": "src"
         }
     },
     "minimum-stability": "dev",

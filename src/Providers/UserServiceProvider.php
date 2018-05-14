@@ -16,7 +16,7 @@ class UserServiceProvider extends ServiceProvider
 
         $this->registerAdminGuard();
 
-        $this->registerAdminRoutes();
+        $this->mapAdminRoutes();
     }
 
     public function register()
@@ -39,7 +39,7 @@ class UserServiceProvider extends ServiceProvider
         ]);
     }
 
-    protected function registerAdminRoutes()
+    protected function mapAdminRoutes()
     {
         Route::prefix('api')
              ->middleware('api')
