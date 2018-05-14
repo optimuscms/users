@@ -12,6 +12,8 @@ class UserServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+
         $this->registerAdminGuard();
 
         $this->registerAdminRoutes();
@@ -24,12 +26,10 @@ class UserServiceProvider extends ServiceProvider
 
     protected function registerAdminGuard()
     {
-        // Todo: Passwords
-
         config()->set([
             'auth.guards.admin' => [
                 'driver' => 'jwt',
-                'provider' => 'admins'
+                'provider' => 'admin_users'
             ],
 
             'auth.providers.admin_users' => [
@@ -49,6 +49,7 @@ class UserServiceProvider extends ServiceProvider
                      Route::get('user', 'AdminUsersController@me');
                      Route::apiResource('users', 'AdminUsersController');
 
+                     // Todo: Refresh
                      Route::post('auth/logout', 'LoginController@logout');
                  });
 
