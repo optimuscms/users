@@ -3,6 +3,7 @@
 namespace Optimus\Users\Providers;
 
 use Optimus\Users\AdminUser;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Tymon\JWTAuth\Providers\LaravelServiceProvider;
 
