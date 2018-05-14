@@ -37,6 +37,13 @@ class AdminUsersController extends Controller
         return new AdminUserResource($user);
     }
 
+    public function me()
+    {
+        $user = Auth::guard('admin')->user();
+
+        return new AdminUserResource($user);
+    }
+
     public function update(Request $request, $id)
     {
         $user = AdminUser::findOrFail($id);
