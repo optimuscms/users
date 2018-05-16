@@ -5,6 +5,7 @@ namespace Optimus\Users\Http\Controllers;
 use Illuminate\Http\Request;
 use Optimus\Users\AdminUser;
 use Illuminate\Validation\Rule;
+use Illuminate\Routing\Controller;
 use Optimus\Users\Http\Resources\AdminUser as AdminUserResource;
 
 class AdminUsersController extends Controller
@@ -73,8 +74,8 @@ class AdminUsersController extends Controller
             'name' => 'required|string',
             'email' => 'required|email',
             'username' => [
-                'required|string',
-                Rule::unique()->where(function ($query) use ($user) {
+                'required', 'string',
+                Rule::unique('admin_users')->where(function ($query) use ($user) {
                     $query->when($user, function ($query) use ($user) {
                         $query->where('id', '<>', $user->id);
                     });
