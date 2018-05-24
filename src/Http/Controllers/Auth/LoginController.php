@@ -46,7 +46,7 @@ class LoginController extends Controller
      */
     protected function validateLogin(Request $request)
     {
-        $request->validate($request, [
+        $request->validate([
             $this->username() => 'required|string',
             'password' => 'required|string',
         ]);
@@ -64,6 +64,16 @@ class LoginController extends Controller
         $this->clearLoginAttempts($request);
 
         return response()->json(['token' => $token]);
+    }
+
+    /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return 'username';
     }
 
     /**
