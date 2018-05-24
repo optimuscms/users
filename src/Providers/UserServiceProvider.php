@@ -51,10 +51,10 @@ class UserServiceProvider extends ServiceProvider
                      Route::apiResource('users', 'AdminUsersController');
 
                      // Todo: Refresh
-                     Route::post('auth/logout', 'LoginController@logout');
+                     Route::post('auth/logout', 'Auth\LoginController@logout');
                  });
 
-                 Route::post('auth/login', 'LoginController@login')->middleware('guest:admin');
+                 Route::post('auth/login', 'Auth\LoginController@login')->middleware('guest:admin');
              });
     }
 }
