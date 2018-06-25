@@ -16,6 +16,13 @@
             "Optimus\\Users\\": "src"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Optimus\\Media\\Providers\\MediaServiceProvider"
+            ]
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
