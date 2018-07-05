@@ -13,11 +13,14 @@ class UserServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        // Migrations
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
+        // Guards
         $this->registerAdminGuard();
 
-        $this->mapAdminRoutes();
+        // Routes
+        $this->registerAdminRoutes();
     }
 
     public function register()
@@ -40,7 +43,7 @@ class UserServiceProvider extends ServiceProvider
         ]);
     }
 
-    protected function mapAdminRoutes()
+    protected function registerAdminRoutes()
     {
         Route::prefix('api')
              ->middleware('api')
@@ -49,12 +52,12 @@ class UserServiceProvider extends ServiceProvider
                  Route::middleware('auth:admin')->group(function () {
                      Route::get('user', 'AdminUsersController@me');
                      Route::apiResource('users', 'AdminUsersController');
-
-                     // Todo: Refresh
+                     
                      Route::post('auth/logout', 'Auth\LoginController@logout');
                  });
 
                  Route::post('auth/login', 'Auth\LoginController@login')->middleware('guest:admin');
+                 Route::post('auth/refresh', 'Auth\LoginController@refresh')->middleware('guest:admin');
              });
     }
 }

@@ -11,14 +11,6 @@ class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    /**
-     * Handle a login request to the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function login(Request $request)
     {
         $this->validateLogin($request);
@@ -38,12 +30,6 @@ class LoginController extends Controller
         return $this->sendFailedLoginResponse($request);
     }
 
-    /**
-     * Validate the user login request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
-     */
     protected function validateLogin(Request $request)
     {
         $request->validate([
@@ -52,35 +38,34 @@ class LoginController extends Controller
         ]);
     }
 
-    /**
-     * Send the response after the user was authenticated.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $token
-     * @return \Illuminate\Http\Response
-     */
     protected function sendLoginResponse(Request $request, $token)
     {
         $this->clearLoginAttempts($request);
 
-        return response()->json(['token' => $token]);
+        return $this->tokenResponse($token);
     }
 
-    /**
-     * Get the login username to be used by the controller.
-     *
-     * @return string
-     */
     public function username()
     {
         return 'username';
     }
 
-    /**
-     * Log the user out of the application.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function refresh()
+    {
+        $token = $this->guard()->refresh();
+
+        return $this->tokenResponse($token);
+    }
+
+    protected function tokenResponse($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $this->guard()->factory()->getTTL() * 60
+        ]);
+    }
+
     public function logout()
     {
         $this->guard()->logout();
@@ -88,11 +73,6 @@ class LoginController extends Controller
         return response(null, 204);
     }
 
-    /**
-     * Get the guard to be used during authentication.
-     *
-     * @return \Illuminate\Contracts\Auth\StatefulGuard
-     */
     public function guard()
     {
         return Auth::guard('admin');
