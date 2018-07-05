@@ -50,13 +50,16 @@ class AdminUsersController extends Controller
         $user = AdminUser::findOrFail($id);
 
         $this->validateUser($request, $user);
+        
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->username = $request->input('username');
 
-        $user->update([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'username' => $request->input('username'),
-            'password' => bcrypt($request->input('password'))
-        ]);
+        if ($request->filled('password')) {
+            $user->password = $request->input('password');
+        }
+
+        $user->save();
 
         return response(null, 204);
     }
@@ -68,7 +71,7 @@ class AdminUsersController extends Controller
         return response(null, 204);
     }
 
-    protected function validateUser(Request $request, $user = null)
+    protected function validateUser(Request $request, AdminUser $user = null)
     {
         $request->validate([
             'name' => 'required|string',
@@ -81,7 +84,7 @@ class AdminUsersController extends Controller
                     });
                 })
             ],
-            'password' => 'required|string|min:6'
+            'password' => ($user ? 'nullable' : 'required') . '|string|min:6'
         ]);
     }
 }
