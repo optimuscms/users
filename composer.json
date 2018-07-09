@@ -19,7 +19,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Optimus\\Media\\Providers\\MediaServiceProvider"
+                "Optimus\\Users\\Providers\\UserServiceProvider"
             ]
         }
     },
