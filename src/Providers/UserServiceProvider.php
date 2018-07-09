@@ -57,7 +57,7 @@ class UserServiceProvider extends ServiceProvider
                  });
 
                  Route::post('auth/login', 'Auth\LoginController@login')->middleware('guest:admin');
-                 Route::post('auth/refresh', 'Auth\LoginController@refresh')->middleware('guest:admin');
+                 Route::post('auth/refresh', 'Auth\LoginController@refresh');
              });
     }
 }
