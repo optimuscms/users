@@ -28,6 +28,8 @@ class AdminUsersController extends Controller
             'password' => bcrypt($request->input('password'))
         ]);
 
+        $user->givePermissionTo($request->input('permissions'));
+
         return new AdminUserResource($user);
     }
 
@@ -50,14 +52,18 @@ class AdminUsersController extends Controller
         $user = AdminUser::findOrFail($id);
 
         $this->validateUser($request, $user);
-        
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->username = $request->input('username');
+
+        $user->fill([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'username' => $request->input('username')
+        ]);
 
         if ($request->filled('password')) {
             $user->password = $request->input('password');
         }
+
+        $user->syncPermissions($request->input('permissions'));
 
         $user->save();
 
@@ -84,7 +90,9 @@ class AdminUsersController extends Controller
                     });
                 })
             ],
-            'password' => ($user ? 'nullable' : 'required') . '|string|min:6'
+            'password' => ($user ? 'nullable' : 'required') . '|string|min:6',
+            'permissions' => 'array|required',
+            'permissions.*' => 'exists:permissions,id'
         ]);
     }
 }

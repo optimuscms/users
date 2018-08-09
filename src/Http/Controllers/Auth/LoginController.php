@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Optimus\Users\Http\Resources\AdminUser as AdminUserResource;
 
 class LoginController extends Controller
 {
@@ -48,7 +49,7 @@ class LoginController extends Controller
     protected function authenticated($token, $user)
     {
         return response()->json([
-            'user' => $user->load('permissions'),
+            'user' => new AdminUserResource($user->load('permissions')),
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => $this->guard()->factory()->getTTL() * 60
