@@ -42,7 +42,17 @@ class LoginController extends Controller
     {
         $this->clearLoginAttempts($request);
 
-        return $this->tokenResponse($token);
+        return $this->authenticated($token, $this->guard()->user());
+    }
+
+    protected function authenticated($token, $user)
+    {
+        return response()->json([
+            'user' => $user->load('permissions'),
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $this->guard()->factory()->getTTL() * 60
+        ]);
     }
 
     public function username()
@@ -54,16 +64,7 @@ class LoginController extends Controller
     {
         $token = $this->guard()->refresh();
 
-        return $this->tokenResponse($token);
-    }
-
-    protected function tokenResponse($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() * 60
-        ]);
+        return $this->authenticated($token, $this->guard()->user());
     }
 
     public function logout()
