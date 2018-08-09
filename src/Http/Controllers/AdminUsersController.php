@@ -35,7 +35,7 @@ class AdminUsersController extends Controller
 
     public function show($id)
     {
-        $user = AdminUser::findOrFail($id);
+        $user = AdminUser::with('permissions')->findOrFail($id);
 
         return new AdminUserResource($user);
     }
@@ -92,7 +92,7 @@ class AdminUsersController extends Controller
             ],
             'password' => ($user ? 'nullable' : 'required') . '|string|min:6',
             'permissions' => 'array|required',
-            'permissions.*' => 'exists:permissions,id'
+            'permissions.*' => 'exists:permissions,name'
         ]);
     }
 }
