@@ -60,7 +60,7 @@ class AdminUsersController extends Controller
         ]);
 
         if ($request->filled('password')) {
-            $user->password = $request->input('password');
+            $user->password = bcrypt($request->input('password'));
         }
 
         $user->syncPermissions($request->input('permissions'));
