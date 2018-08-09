@@ -91,7 +91,7 @@ class AdminUsersController extends Controller
                 })
             ],
             'password' => ($user ? 'nullable' : 'required') . '|string|min:6',
-            'permissions' => 'array|required',
+            'permissions' => 'array',
             'permissions.*' => 'exists:permissions,name'
         ]);
     }
