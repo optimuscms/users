@@ -16,7 +16,7 @@ class AdminUser extends Authenticatable implements JWTSubject
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password'
     ];
 
     public function getJWTIdentifier()

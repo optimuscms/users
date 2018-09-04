@@ -30,7 +30,7 @@ class UserServiceProvider extends ServiceProvider
 
     protected function registerAdminGuard()
     {
-        config()->set([
+        config([
             'auth.guards.admin' => [
                 'driver' => 'jwt',
                 'provider' => 'admin_users'
@@ -45,14 +45,16 @@ class UserServiceProvider extends ServiceProvider
 
     protected function registerAdminRoutes()
     {
-        Route::prefix('api')
-             ->middleware('api')
+        Route::middleware('api')
              ->namespace($this->controllerNamespace)
              ->group(function () {
                  Route::middleware('auth:admin')->group(function () {
-                     Route::get('user', 'AdminUsersController@me');
-                     Route::apiResource('users', 'AdminUsersController');
-                     Route::get('user-permissions', 'PermissionsController@index');
+                     Route::prefix('api')->group(function () {
+                         Route::get('admin-user', 'AdminUsersController@show');
+                         Route::apiResource('admin-users', 'AdminUsersController');
+
+                         Route::get('admin-user-permissions', 'PermissionsController@index');
+                     });
                      
                      Route::post('auth/logout', 'Auth\LoginController@logout');
                  });

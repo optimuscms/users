@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Optimus\Users\AdminUser;
 use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Optimus\Users\Http\Resources\AdminUser as AdminUserResource;
 
 class AdminUsersController extends Controller
@@ -19,30 +20,27 @@ class AdminUsersController extends Controller
 
     public function store(Request $request)
     {
-        $this->validateUser($request);
+        $this->validate($request);
 
-        $user = AdminUser::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'username' => $request->input('username'),
-            'password' => bcrypt($request->input('password'))
-        ]);
+        $user = new AdminUser();
+
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->username = $request->input('username');
+        $user->password = bcrypt($request->input('password'));
+
+        $user->save();
 
         $user->givePermissionTo($request->input('permissions'));
 
         return new AdminUserResource($user);
     }
 
-    public function show($id)
+    public function show($id = null)
     {
-        $user = AdminUser::with('permissions')->findOrFail($id);
-
-        return new AdminUserResource($user);
-    }
-
-    public function me()
-    {
-        $user = Auth::guard('admin')->user();
+        $user = ! is_null($id)
+            ? AdminUser::with('permissions')->findOrFail($id)
+            : Auth::guard('admin')->user();
 
         return new AdminUserResource($user);
     }
@@ -51,23 +49,21 @@ class AdminUsersController extends Controller
     {
         $user = AdminUser::findOrFail($id);
 
-        $this->validateUser($request, $user);
+        $this->validate($request, $user);
 
-        $user->fill([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'username' => $request->input('username')
-        ]);
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->username = $request->input('username');
 
         if ($request->filled('password')) {
             $user->password = bcrypt($request->input('password'));
         }
 
-        $user->syncPermissions($request->input('permissions'));
-
         $user->save();
 
-        return response(null, 204);
+        $user->syncPermissions($request->input('permissions'));
+
+        return new AdminUserResource($user);
     }
 
     public function destroy($id)
@@ -77,18 +73,19 @@ class AdminUsersController extends Controller
         return response(null, 204);
     }
 
-    protected function validateUser(Request $request, AdminUser $user = null)
+    protected function validate(Request $request, AdminUser $user = null)
     {
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email',
             'username' => [
                 'required', 'string',
-                Rule::unique('admin_users')->where(function ($query) use ($user) {
-                    $query->when($user, function ($query) use ($user) {
-                        $query->where('id', '<>', $user->id);
-                    });
-                })
+                Rule::unique('admin_users')
+                    ->where(function ($query) use ($user) {
+                        $query->when($user, function ($query) use ($user) {
+                            $query->where('id', '<>', $user->id);
+                        });
+                    })
             ],
             'password' => ($user ? 'nullable' : 'required') . '|string|min:6',
             'permissions' => 'array',

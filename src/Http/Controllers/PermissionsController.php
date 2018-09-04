@@ -9,7 +9,7 @@ class PermissionsController extends Controller
 {
     public function index()
     {
-        $permissions = Permission::all();
+        $permissions = Permission::where('guard_name', 'admin')->get();
 
         return response()->json([
             'data' => $permissions->pluck('name')

@@ -12,18 +12,24 @@
         "tymon/jwt-auth": "^1.0",
         "spatie/laravel-permission": "^2.13"
     },
+    "require-dev": {
+        "orchestra/testbench": "~3.6"
+    },
     "autoload": {
         "psr-4": {
             "Optimus\\Users\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Optimus\\Users\\Tests\\": "tests"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
-                "Optimus\\Users\\Providers\\UserServiceProvider"
+                "Optimus\\Users\\UserServiceProvider"
             ]
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
