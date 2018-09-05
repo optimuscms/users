@@ -1,15 +1,15 @@
 <?php
 
-namespace Optimus\Users;
+namespace Optimus\Users\Models;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasPermissions;
+// use Spatie\Permission\Traits\HasPermissions;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class AdminUser extends Authenticatable implements JWTSubject
 {
-    use HasPermissions, Notifiable;
+    use Notifiable; // HasPermissions;
 
     protected $fillable = [
         'name', 'email', 'username', 'password'

@@ -13,7 +13,8 @@
         "spatie/laravel-permission": "^2.13"
     },
     "require-dev": {
-        "orchestra/testbench": "~3.6"
+        "orchestra/testbench": "~3.6",
+        "mockery/mockery": "^1.1"
     },
     "autoload": {
         "psr-4": {
@@ -31,5 +32,7 @@
                 "Optimus\\Users\\UserServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

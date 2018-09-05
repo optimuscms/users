@@ -1,8 +1,8 @@
 <?php
 
-namespace Optimus\Users\Providers;
+namespace Optimus\Users;
 
-use Optimus\Users\AdminUser;
+use Optimus\Users\Models\AdminUser;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Tymon\JWTAuth\Providers\LaravelServiceProvider;
@@ -14,7 +14,7 @@ class UserServiceProvider extends ServiceProvider
     public function boot()
     {
         // Migrations
-        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         // Guards
         $this->registerAdminGuard();
@@ -30,7 +30,7 @@ class UserServiceProvider extends ServiceProvider
 
     protected function registerAdminGuard()
     {
-        config([
+        $this->app['config']->set([
             'auth.guards.admin' => [
                 'driver' => 'jwt',
                 'provider' => 'admin_users'
@@ -45,17 +45,19 @@ class UserServiceProvider extends ServiceProvider
 
     protected function registerAdminRoutes()
     {
-        Route::middleware('api')
+        Route::prefix('api')
+             ->middleware('api')
              ->namespace($this->controllerNamespace)
              ->group(function () {
                  Route::middleware('auth:admin')->group(function () {
-                     Route::prefix('api')->group(function () {
-                         Route::get('admin-user', 'AdminUsersController@show');
-                         Route::apiResource('admin-users', 'AdminUsersController');
+                     // Users
+                     Route::get('admin-user', 'AdminUsersController@show');
+                     Route::apiResource('admin-users', 'AdminUsersController');
 
-                         Route::get('admin-user-permissions', 'PermissionsController@index');
-                     });
-                     
+                     // Permissions
+                     Route::get('admin-permissions', 'PermissionsController@index');
+
+                     // Auth
                      Route::post('auth/logout', 'Auth\LoginController@logout');
                  });
 

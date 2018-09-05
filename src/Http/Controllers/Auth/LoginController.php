@@ -49,7 +49,7 @@ class LoginController extends Controller
     protected function authenticated($token, $user)
     {
         return response()->json([
-            'user' => new AdminUserResource($user->load('permissions')),
+            'user' => new AdminUserResource($user /* ->load('permissions') */),
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => $this->guard()->factory()->getTTL() * 60

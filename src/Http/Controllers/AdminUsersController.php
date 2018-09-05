@@ -3,7 +3,7 @@
 namespace Optimus\Users\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Optimus\Users\AdminUser;
+use Optimus\Users\Models\AdminUser;
 use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
