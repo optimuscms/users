@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Optimus\Users\Http\Resources\AdminUser as AdminUserResource;
+use Optimus\Users\Models\AdminUser;
 
 class LoginController extends Controller
 {
@@ -64,8 +65,9 @@ class LoginController extends Controller
     public function refresh()
     {
         $token = $this->guard()->refresh();
+        $user = $this->guard()->setToken($token)->user();
 
-        return $this->authenticated($token, $this->guard()->user());
+        return $this->authenticated($token, $user);
     }
 
     public function logout()

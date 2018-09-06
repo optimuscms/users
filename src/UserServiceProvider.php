@@ -39,7 +39,7 @@ class UserServiceProvider extends ServiceProvider
             'auth.providers.admin_users' => [
                 'driver' => 'eloquent',
                 'model' => AdminUser::class,
-            ],
+            ]
         ]);
     }
 

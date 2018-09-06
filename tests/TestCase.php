@@ -25,7 +25,7 @@ class TestCase extends BaseTestCase
         $app['config']->set('database.connections.sqlite', [
             'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix' => '',
+            'prefix' => ''
         ]);
     }
 }
