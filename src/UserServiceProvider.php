@@ -54,9 +54,6 @@ class UserServiceProvider extends ServiceProvider
                      Route::get('admin-user', 'AdminUsersController@show');
                      Route::apiResource('admin-users', 'AdminUsersController');
 
-                     // Permissions
-                     Route::get('admin-permissions', 'PermissionsController@index');
-
                      // Auth
                      Route::post('auth/logout', 'Auth\LoginController@logout');
                  });

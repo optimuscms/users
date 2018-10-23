@@ -13,9 +13,6 @@ class AdminUser extends JsonResource
             'name' => $this->name,
             'username' => $this->username,
             'email' => $this->email,
-            // 'permissions' => $this->whenLoaded('permissions', function () {
-            //     return $this->permissions->pluck('name');
-            // }),
             'created_at' => (string) $this->created_at,
             'updated_at' => (string) $this->updated_at
         ];

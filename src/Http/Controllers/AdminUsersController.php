@@ -3,10 +3,11 @@
 namespace Optimus\Users\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Optimus\Users\Models\AdminUser;
 use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controller;
+use Optimus\Users\Models\AdminUser;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Optimus\Users\Http\Resources\AdminUser as AdminUserResource;
 
 class AdminUsersController extends Controller
@@ -31,15 +32,13 @@ class AdminUsersController extends Controller
 
         $user->save();
 
-        $user->givePermissionTo($request->input('permissions'));
-
         return new AdminUserResource($user);
     }
 
     public function show($id = null)
     {
         $user = ! is_null($id)
-            ? AdminUser::with('permissions')->findOrFail($id)
+            ? AdminUser::findOrFail($id)
             : Auth::guard('admin')->user();
 
         return new AdminUserResource($user);
@@ -61,8 +60,6 @@ class AdminUsersController extends Controller
 
         $user->save();
 
-        $user->syncPermissions($request->input('permissions'));
-
         return new AdminUserResource($user);
     }
 
@@ -81,15 +78,13 @@ class AdminUsersController extends Controller
             'username' => [
                 'required', 'string',
                 Rule::unique('admin_users')
-                    ->where(function ($query) use ($user) {
-                        $query->when($user, function ($query) use ($user) {
+                    ->where(function (Builder $query) use ($user) {
+                        $query->when($user, function (Builder $query) use ($user) {
                             $query->where('id', '<>', $user->id);
                         });
                     })
             ],
             'password' => ($user ? 'nullable' : 'required') . '|string|min:6',
-            'permissions' => 'array',
-            'permissions.*' => 'exists:permissions,name'
         ]);
     }
 }
