@@ -7,7 +7,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controller;
 use Optimus\Users\Models\AdminUser;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Builder;
 use Optimus\Users\Http\Resources\AdminUser as AdminUserResource;
 
 class AdminUsersController extends Controller
@@ -78,8 +77,8 @@ class AdminUsersController extends Controller
             'username' => [
                 'required', 'string',
                 Rule::unique('admin_users')
-                    ->where(function (Builder $query) use ($user) {
-                        $query->when($user, function (Builder $query) use ($user) {
+                    ->where(function ($query) use ($user) {
+                        $query->when($user, function ($query) use ($user) {
                             $query->where('id', '<>', $user->id);
                         });
                     })
