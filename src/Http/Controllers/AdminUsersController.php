@@ -44,7 +44,7 @@ class AdminUsersController extends Controller
     {
         $user = $id
             ? AdminUser::findOrFail($id)
-            : $request->user('api');
+            : $request->user('admin');
 
         return new AdminUserResource($user);
     }

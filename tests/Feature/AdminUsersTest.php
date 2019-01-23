@@ -93,6 +93,30 @@ class AdminUsersTest extends TestCase
     }
 
     /** @test */
+    public function it_can_display_the_currently_authenticated_admin_user()
+    {
+        $user = $this->signIn();
+
+        $response = $this->getJson(route('admin.users.authenticated'));
+
+        $response
+            ->assertOk()
+            ->assertJsonStructure([
+                'data' => $this->expectedJsonStructure()
+            ])
+            ->assertJson([
+                'data' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'username' => $user->username,
+                    'created_at' => (string) $user->created_at,
+                    'updated_at' => (string) $user->updated_at
+                ]
+            ]);
+    }
+
+    /** @test */
     public function it_can_update_an_admin_user()
     {
         $user = factory(AdminUser::class)->create([
