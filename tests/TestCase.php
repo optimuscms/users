@@ -27,18 +27,6 @@ class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        // Auth
-        $app['config']->set('auth.guards.admin', [
-            'driver' => 'session',
-            'provider' => 'admins'
-        ]);
-
-        $app['config']->set('auth.providers.admins', [
-            'driver' => 'eloquent',
-            'model' => AdminUser::class
-        ]);
-
-        // Database
         $app['config']->set('database.connections.sqlite', [
             'driver' => 'sqlite',
             'database' => ':memory:',
