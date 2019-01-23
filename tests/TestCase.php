@@ -2,10 +2,9 @@
 
 namespace Optimus\Users\Tests;
 
-use Laravel\Passport\Passport;
 use Optimus\Users\Models\AdminUser;
 use Optimus\Users\UserServiceProvider;
-use Laravel\Passport\PassportServiceProvider;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -23,7 +22,6 @@ class TestCase extends BaseTestCase
     {
         return [
             UserServiceProvider::class,
-            PassportServiceProvider::class
         ];
     }
 
@@ -31,7 +29,7 @@ class TestCase extends BaseTestCase
     {
         // Auth
         $app['config']->set('auth.guards.admin', [
-            'driver' => 'passport',
+            'driver' => 'session',
             'provider' => 'admins'
         ]);
 
@@ -55,10 +53,12 @@ class TestCase extends BaseTestCase
         ]);
     }
 
-    protected function signIn($user = null, $scopes = [])
+    protected function signIn(Authenticatable $user = null)
     {
         $user = $user ?: factory(AdminUser::class)->create();
 
-        return Passport::actingAs($user, $scopes, 'admin');
+        $this->actingAs($user, 'admin');
+
+        return $user;
     }
 }

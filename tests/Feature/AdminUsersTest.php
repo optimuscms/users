@@ -18,7 +18,7 @@ class AdminUsersTest extends TestCase
 
         $this->signIn($users->first());
 
-        $response = $this->getJson(route('api.admin-users.index'));
+        $response = $this->getJson(route('admin.users.index'));
 
         $response
             ->assertOk()
@@ -35,7 +35,7 @@ class AdminUsersTest extends TestCase
     {
         $this->signIn();
 
-        $response = $this->postJson(route('api.admin-users.store'), $data = [
+        $response = $this->postJson(route('admin.users.store'), $data = [
             'name' => 'Jack Robertson',
             'email' => 'jack@optixsolutions.co.uk',
             'username' => 'jack',
@@ -71,7 +71,7 @@ class AdminUsersTest extends TestCase
 
         $this->signIn($user);
 
-        $response = $this->getJson(route('api.admin-users.show', [
+        $response = $this->getJson(route('admin.users.show', [
             'id' => $user->id
         ]));
 
@@ -104,7 +104,7 @@ class AdminUsersTest extends TestCase
 
         $this->signIn($user);
 
-        $response = $this->patchJson(route('api.admin-users.update', [
+        $response = $this->patchJson(route('admin.users.update', [
             'id' => $user->id
         ]), $newData = [
             'name' => 'New name',
@@ -138,7 +138,7 @@ class AdminUsersTest extends TestCase
 
         $user = factory(AdminUser::class)->create();
 
-        $response = $this->deleteJson(route('api.admin-users.destroy', [
+        $response = $this->deleteJson(route('admin.users.destroy', [
             'id' => $user->id
         ]));
 

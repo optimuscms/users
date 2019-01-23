@@ -4,7 +4,7 @@ namespace Optimus\Users\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AdminUser extends JsonResource
+class AdminUserResource extends JsonResource
 {
     public function toArray($request)
     {

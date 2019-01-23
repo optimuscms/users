@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controller;
 use Optimus\Users\Models\AdminUser;
-use Optimus\Users\Http\Resources\AdminUser as AdminUserResource;
+use Optimus\Users\Http\Resources\AdminUserResource;
 
 class AdminUsersController extends Controller
 {

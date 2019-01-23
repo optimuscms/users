@@ -20,14 +20,14 @@ class UserServiceProvider extends ServiceProvider
 
     protected function registerAdminRoutes()
     {
-        Route::name('api.')
-             ->prefix('api')
-             ->middleware('api')
+        Route::name('admin.')
+             ->prefix('admin')
+             ->middleware('web')
              ->namespace($this->controllerNamespace)
              ->group(function () {
                  // Users
-                 Route::get('admin-user', 'AdminUsersController@show');
-                 Route::apiResource('admin-users', 'AdminUsersController');
+                 Route::get('user', 'AdminUsersController@show');
+                 Route::apiResource('users', 'AdminUsersController');
              });
     }
 }
