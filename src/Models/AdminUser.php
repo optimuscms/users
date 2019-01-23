@@ -2,13 +2,14 @@
 
 namespace Optimus\Users\Models;
 
-use Tymon\JWTAuth\Contracts\JWTSubject;
+// use Optix\Media\HasMedia;
+use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class AdminUser extends Authenticatable implements JWTSubject
+class AdminUser extends Authenticatable
 {
-    use Notifiable;
+    use HasApiTokens, /* HasMedia, */Notifiable;
 
     protected $fillable = [
         'name', 'email', 'username', 'password'
@@ -18,13 +19,9 @@ class AdminUser extends Authenticatable implements JWTSubject
         'password'
     ];
 
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
+    // public function registerMediaGroups()
+    // {
+    //     $this->addMediaGroup('avatar')
+    //          ->performConversions('avatar');
+    // }
 }

@@ -6,12 +6,15 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controller;
 use Optimus\Users\Models\AdminUser;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Builder;
 use Optimus\Users\Http\Resources\AdminUser as AdminUserResource;
 
 class AdminUsersController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+    }
+
     public function index()
     {
         $users = AdminUser::all();
@@ -21,25 +24,27 @@ class AdminUsersController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request);
+        $this->validateUser($request);
 
-        $user = new AdminUser();
+        $user = AdminUser::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'username' => $request->input('username'),
+            'password' => bcrypt($request->input('password'))
+        ]);
 
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->username = $request->input('username');
-        $user->password = bcrypt($request->input('password'));
-
-        $user->save();
+        // if ($request->filled('avatar_id')) {
+        //     $user->attachMedia($request->input('avatar_id'), 'avatar');
+        // }
 
         return new AdminUserResource($user);
     }
 
-    public function show($id = null)
+    public function show(Request $request, $id = null)
     {
-        $user = ! is_null($id)
+        $user = $id
             ? AdminUser::findOrFail($id)
-            : Auth::guard('admin')->user();
+            : $request->user('api');
 
         return new AdminUserResource($user);
     }
@@ -48,17 +53,25 @@ class AdminUsersController extends Controller
     {
         $user = AdminUser::findOrFail($id);
 
-        $this->validate($request, $user);
+        $this->validateUser($request, $user);
 
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->username = $request->input('username');
+        $user->fill([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'username' => $request->input('username')
+        ]);
 
         if ($request->filled('password')) {
             $user->password = bcrypt($request->input('password'));
         }
 
         $user->save();
+
+        // $user->clearMediaGroup('avatar');
+
+        // if ($request->filled('avatar_id')) {
+        //     $user->attachMedia($request->input('avatar_id'), 'avatar');
+        // }
 
         return new AdminUserResource($user);
     }
@@ -70,21 +83,17 @@ class AdminUsersController extends Controller
         return response(null, 204);
     }
 
-    protected function validate(Request $request, AdminUser $user = null)
+    protected function validateUser(Request $request, AdminUser $user = null)
     {
         $request->validate([
-            'name' => 'required|string',
+            'name' => 'required',
             'email' => 'required|email',
             'username' => [
-                'required', 'string',
-                Rule::unique('admin_users')
-                    ->where(function (Builder $query) use ($user) {
-                        $query->when($user, function (Builder $query) use ($user) {
-                            $query->where('id', '<>', $user->id);
-                        });
-                    })
+                'required',
+                Rule::unique('admin_users')->ignore($user)
             ],
-            'password' => ($user ? 'nullable' : 'required') . '|string|min:6',
+            'password' => ($user ? 'nullable' : 'required') . '|min:6',
+            // 'avatar_id' => 'nullable|exists:media,id'
         ]);
     }
 }
