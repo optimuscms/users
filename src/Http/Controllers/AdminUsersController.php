@@ -10,11 +10,6 @@ use Optimus\Users\Http\Resources\AdminUserResource;
 
 class AdminUsersController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:admin');
-    }
-
     public function index()
     {
         $users = AdminUser::all();
@@ -32,10 +27,6 @@ class AdminUsersController extends Controller
             'username' => $request->input('username'),
             'password' => bcrypt($request->input('password'))
         ]);
-
-        // if ($request->filled('avatar_id')) {
-        //     $user->attachMedia($request->input('avatar_id'), 'avatar');
-        // }
 
         return new AdminUserResource($user);
     }
@@ -67,12 +58,6 @@ class AdminUsersController extends Controller
 
         $user->save();
 
-        // $user->clearMediaGroup('avatar');
-
-        // if ($request->filled('avatar_id')) {
-        //     $user->attachMedia($request->input('avatar_id'), 'avatar');
-        // }
-
         return new AdminUserResource($user);
     }
 
@@ -93,7 +78,6 @@ class AdminUsersController extends Controller
                 Rule::unique('admin_users')->ignore($user)
             ],
             'password' => ($user ? 'nullable' : 'required') . '|min:6',
-            // 'avatar_id' => 'nullable|exists:media,id'
         ]);
     }
 }

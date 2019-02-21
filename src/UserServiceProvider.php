@@ -41,7 +41,7 @@ class UserServiceProvider extends ServiceProvider
     {
         Route::name('admin.')
              ->prefix('admin')
-             ->middleware('web')
+             ->middleware('web', 'auth:admin')
              ->namespace($this->controllerNamespace)
              ->group(function () {
                  Route::apiResource('users', 'AdminUsersController');
