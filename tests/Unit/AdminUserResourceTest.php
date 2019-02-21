@@ -28,17 +28,13 @@ class AdminUserResourceTest extends TestCase
 
         $request = Mockery::mock(Request::class);
 
-        $expected = [
+        $this->assertEquals([
             'id' => 1,
             'name' => $user->name,
             'email' => $user->email,
             'username' => $user->username,
             'created_at' => (string) $user->created_at,
             'updated_at' => (string) $user->updated_at
-        ];
-
-        $this->assertEquals(
-            $expected, $resource->toArray($request)
-        );
+        ], $resource->toArray($request));
     }
 }

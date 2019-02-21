@@ -12,7 +12,7 @@ class AdminUserTest extends TestCase
     {
         $user = new AdminUser();
 
-        $user->fill($attributes = [
+        $user->fill([
             'name' => 'Foo Bar',
             'email' => 'foo@bar.com',
             'username' => 'foobar',
@@ -20,20 +20,27 @@ class AdminUserTest extends TestCase
             'unknown_field' => true
         ]);
 
-        $this->assertEquals($attributes['name'], $user->getAttribute('name'));
-        $this->assertEquals($attributes['email'], $user->getAttribute('email'));
-        $this->assertEquals($attributes['username'], $user->getAttribute('username'));
-        $this->assertEquals($attributes['password'], $user->getAttribute('password'));
-        $this->assertNotContains('unknown_field', $user->getAttributes());
+        $attributes = $user->getAttributes();
+
+        $this->assertNotContains(
+            'unknown_field', $user->getAttributes()
+        );
+
+        $this->assertEmpty(array_diff(
+            ['name', 'email', 'username', 'password'],
+            $attributes
+        ));
     }
 
     /** @test */
-    public function it_hides_the_password_field_when_serialised()
+    public function it_hides_the_password_field_when_cast_to_an_array()
     {
         $user = new AdminUser();
 
         $user->password = 'fooBar123';
 
-        $this->assertNotContains('password', $user->toArray());
+        $this->assertNotContains(
+            'password', $user->toArray()
+        );
     }
 }
