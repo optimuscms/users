@@ -2,7 +2,9 @@
 
 namespace Optimus\Users\Tests;
 
+use Optimus\Users\Models\AdminUser;
 use Optimus\Users\UserServiceProvider;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -11,12 +13,16 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->artisan('migrate');
+        $this->withFactories(
+            __DIR__ . '/../database/factories'
+        );
     }
 
     protected function getPackageProviders($app)
     {
-        return [UserServiceProvider::class];
+        return [
+            UserServiceProvider::class,
+        ];
     }
 
     protected function getEnvironmentSetUp($app)
@@ -27,5 +33,26 @@ class TestCase extends BaseTestCase
             'database' => ':memory:',
             'prefix' => ''
         ]);
+    }
+
+    protected function signIn(Authenticatable $user = null)
+    {
+        $user = $user ?: factory(AdminUser::class)->create();
+
+        $this->actingAs($user, 'admin');
+
+        return $user;
+    }
+
+    protected function expectedJsonStructure()
+    {
+        return [
+            'id',
+            'name',
+            'email',
+            'username',
+            'created_at',
+            'updated_at'
+        ];
     }
 }

@@ -19,6 +19,6 @@
         </whitelist>
     </filter>
     <php>
-        <env name="JWT_SECRET" value="CXYTtaNjBf8Z8HRNIg3NcYypvSab39GT"/>
+        <env name="APP_KEY" value="CXYTtaNjBf8Z8HRNIg3NcYypvSab39GT"/>
     </php>
 </phpunit>
