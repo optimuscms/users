@@ -54,7 +54,32 @@ class UpdateAdminUsersTest extends TestCase
     }
 
     /** @test */
-    public function it_has_required_fields()
+    public function it_will_not_update_passwords_unless_the_field_is_present()
+    {
+        $response = $this->patchJson(route('admin.users.update', [
+            'id' => $this->user->id
+        ]), $newData = array_except(
+            $this->validData(), 'password'
+        ));
+
+        $response
+            ->assertOk()
+            ->assertJson([
+                'data' => [
+                    'name' => $newData['name'],
+                    'email' => $newData['email'],
+                    'username' => $newData['username']
+                ]
+            ]);
+
+        $this->assertTrue(Hash::check(
+            'old_password',
+            $this->user->password
+        ));
+    }
+
+    /** @test */
+    public function there_are_required_fields()
     {
         $response = $this->patchJson(route('admin.users.update', [
             'id' => $this->user->id
@@ -77,7 +102,7 @@ class UpdateAdminUsersTest extends TestCase
     }
 
     /** @test */
-    public function it_requires_a_valid_email()
+    public function the_email_field_must_be_a_valid_email_address()
     {
         $response = $this->patchJson(route('admin.users.update', [
             'id' => $this->user->id
@@ -98,7 +123,7 @@ class UpdateAdminUsersTest extends TestCase
     }
     
     /** @test */
-    public function the_password_field_must_contain_at_least_6_characters()
+    public function the_password_field_must_be_at_least_6_characters()
     {
         $response = $this->patchJson(route('admin.users.update', [
             'id' => $this->user->id

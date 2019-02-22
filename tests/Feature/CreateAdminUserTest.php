@@ -5,20 +5,26 @@ namespace Optimus\Users\Tests\Feature;
 use Optimus\Users\Tests\TestCase;
 use Optimus\Users\Models\AdminUser;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateAdminUserTest extends TestCase
 {
+    use RefreshDatabase;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     /** @test */
     public function it_can_create_an_admin_user()
     {
-        $this->signIn();
-
-        $response = $this->postJson(route('admin.users.store'), $data = [
-            'name' => 'Jack Robertson',
-            'email' => 'jack@optixsolutions.co.uk',
-            'username' => 'jack',
-            'password' => 'password'
-        ]);
+        $response = $this->postJson(
+            route('admin.users.store'),
+            $data = $this->validData()
+        );
 
         $response
             ->assertStatus(201)
@@ -41,5 +47,80 @@ class CreateAdminUserTest extends TestCase
             $data['password'],
             $user->password
         ));
+    }
+
+    /** @test */
+    public function there_are_required_fields()
+    {
+        $response = $this->postJson(route('admin.users.store'));
+
+        $response
+            ->assertStatus(422)
+            ->assertJsonValidationErrors($requiredFields = [
+                'name', 'email', 'username'
+            ]);
+
+        $errors = $response->decodeResponseJson('errors');
+
+        foreach ($requiredFields as $field) {
+            $this->assertContains(
+                trans('validation.required', ['attribute' => $field]),
+                $errors[$field]
+            );
+        }
+    }
+
+    /** @test */
+    public function the_email_field_must_be_a_valid_email_address()
+    {
+        $response = $this->postJson(
+            route('admin.users.store'),
+            $data = $this->validData([
+                'email' => 'not an email'
+            ])
+        );
+
+        $response
+            ->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'email'
+            ]);
+
+        $this->assertContains(
+            trans('validation.email', ['attribute' => 'email']),
+            $response->decodeResponseJson('errors.email')
+        );
+    }
+
+    /** @test */
+    public function the_password_field_must_be_at_least_6_characters()
+    {
+        $response = $this->postJson(
+            route('admin.users.store'),
+            $data = $this->validData([
+                'password' => 'short'
+            ])
+        );
+
+        $response
+            ->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'password'
+            ]);
+
+        $this->assertContains(
+            trans('validation.min.string', ['attribute' => 'password', 'min' => 6]),
+            $response->decodeResponseJson('errors.password')
+        );
+    }
+
+    protected function validData($overrides = [])
+    {
+        return array_merge([
+            'name' => 'New name',
+            'email' => 'new@email.com',
+            'username' => 'new_username',
+            'password' => 'new_password'
+        ], $overrides);
     }
 }
