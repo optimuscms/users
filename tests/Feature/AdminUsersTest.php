@@ -156,6 +156,70 @@ class AdminUsersTest extends TestCase
     }
 
     /** @test */
+    public function it_has_required_fields_on_update()
+    {
+        $user = factory(AdminUser::class)->create([
+            'name' => 'Old name',
+            'email' => 'old@email.com',
+            'username' => 'old_username',
+            'password' => bcrypt('old_password')
+        ]);
+
+        $this->signIn($user);
+
+        $response = $this->patchJson(route('admin.users.update', [
+            'id' => $user->id
+        ]));
+
+        $response
+            ->assertStatus(422)
+            ->assertJsonValidationErrors($requiredFields = [
+                'name', 'email', 'username'
+            ]);
+
+        $errors = $response->decodeResponseJson('errors');
+
+        foreach ($requiredFields as $field) {
+            $this->assertContains(
+                trans('validation.email', ['attribute' => 'email']),
+                $errors[$field]);
+        }
+    }
+
+    /** @test */
+    public function the_email_field_must_be_a_valid_email_address_on_update()
+    {
+        $user = factory(AdminUser::class)->create([
+            'name' => 'Old name',
+            'email' => 'old@email.com',
+            'username' => 'old_username',
+            'password' => bcrypt('old_password')
+        ]);
+
+        $this->signIn($user);
+
+        $response = $this->patchJson(route('admin.users.update', [
+            'id' => $user->id
+        ]), $newData = [
+            'name' => 'New name',
+            'email' => 'not an email',
+            'username' => 'new_username',
+            'password' => 'new_password'
+        ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'email'
+            ]);
+
+        $this->assertContains(
+            trans('validation.email', ['attribute' => 'email']),
+            $response->decodeResponseJson('errors.email')
+        );
+    }
+
+    /** @test */
     public function it_can_delete_an_admin_user()
     {
         $this->signIn();

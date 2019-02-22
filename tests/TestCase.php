@@ -43,4 +43,16 @@ class TestCase extends BaseTestCase
 
         return $user;
     }
+
+    protected function expectedJsonStructure()
+    {
+        return [
+            'id',
+            'name',
+            'email',
+            'username',
+            'created_at',
+            'updated_at'
+        ];
+    }
 }

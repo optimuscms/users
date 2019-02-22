@@ -28,7 +28,7 @@ class AdminUserTest extends TestCase
 
         $this->assertEmpty(array_diff(
             ['name', 'email', 'username', 'password'],
-            $attributes
+            array_keys($attributes)
         ));
     }
 
