@@ -3,7 +3,6 @@
 namespace Optimus\Users;
 
 use Optimus\Users\Models\AdminUser;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class UserServiceProvider extends ServiceProvider
@@ -41,6 +40,7 @@ class UserServiceProvider extends ServiceProvider
     {
         $this->app['router']
              ->name('admin.')
+             ->prefix('admin')
              ->middleware('web', 'auth:admin')
              ->namespace($this->controllerNamespace)
              ->group(function ($router) {
