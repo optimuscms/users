@@ -2,6 +2,7 @@
 
 namespace Optimus\Users\Tests\Feature;
 
+use Illuminate\Support\Arr;
 use Optimus\Users\Tests\TestCase;
 use Optimus\Users\Models\AdminUser;
 use Illuminate\Support\Facades\Hash;
@@ -30,7 +31,7 @@ class UpdateAdminUsersTest extends TestCase
     /** @test */
     public function it_can_update_an_admin_user()
     {
-        $response = $this->patchJson(route('admin.users.update', [
+        $response = $this->patchJson(route('admin.api.users.update', [
             'id' => $this->user->id
         ]), $newData = $this->validData());
 
@@ -56,9 +57,9 @@ class UpdateAdminUsersTest extends TestCase
     /** @test */
     public function it_will_not_update_passwords_unless_the_field_is_present()
     {
-        $response = $this->patchJson(route('admin.users.update', [
+        $response = $this->patchJson(route('admin.api.users.update', [
             'id' => $this->user->id
-        ]), $newData = array_except(
+        ]), $newData = Arr::except(
             $this->validData(), 'password'
         ));
 
@@ -81,7 +82,7 @@ class UpdateAdminUsersTest extends TestCase
     /** @test */
     public function there_are_required_fields()
     {
-        $response = $this->patchJson(route('admin.users.update', [
+        $response = $this->patchJson(route('admin.api.users.update', [
             'id' => $this->user->id
         ]));
 
@@ -104,7 +105,7 @@ class UpdateAdminUsersTest extends TestCase
     /** @test */
     public function the_email_field_must_be_a_valid_email_address()
     {
-        $response = $this->patchJson(route('admin.users.update', [
+        $response = $this->patchJson(route('admin.api.users.update', [
             'id' => $this->user->id
         ]), $newData = $this->validData([
             'email' => 'not an email'
@@ -125,7 +126,7 @@ class UpdateAdminUsersTest extends TestCase
     /** @test */
     public function the_password_field_must_be_at_least_6_characters()
     {
-        $response = $this->patchJson(route('admin.users.update', [
+        $response = $this->patchJson(route('admin.api.users.update', [
             'id' => $this->user->id
         ]), $newData = $this->validData([
             'password' => 'short'

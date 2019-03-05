@@ -17,7 +17,7 @@ class GetAdminUsersTest extends TestCase
 
         $this->signIn($users->first());
 
-        $response = $this->getJson(route('admin.users.index'));
+        $response = $this->getJson(route('admin.api.users.index'));
 
         $response
             ->assertOk()
@@ -36,7 +36,7 @@ class GetAdminUsersTest extends TestCase
 
         $this->signIn($user);
 
-        $response = $this->getJson(route('admin.users.show', [
+        $response = $this->getJson(route('admin.api.users.show', [
             'id' => $user->id
         ]));
 
@@ -62,7 +62,7 @@ class GetAdminUsersTest extends TestCase
     {
         $user = $this->signIn();
 
-        $response = $this->getJson(route('admin.users.authenticated'));
+        $response = $this->getJson(route('admin.api.users.authenticated'));
 
         $response
             ->assertOk()

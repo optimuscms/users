@@ -8,28 +8,30 @@ composer require optimuscms/users
 
 ## Usage
 
+### Api routes
+
 ```http
-GET /admin/users
+GET /admin/api/users
 ```
 
 ```http
-POST /admin/users
+POST /admin/api/users
 ```
 
 ```http
-GET /admin/users/{id}
+GET /admin/api/users/{id}
 ```
 
 ```http
-GET /admin/user
+GET /admin/api/user
 ```
 
 ```http
-PATCH /admin/users/{id}
+PATCH /admin/api/users/{id}
 ```
 
 ```http
-DELETE /admin/users/{id}
+DELETE /admin/api/users/{id}
 ```
 
 ## License

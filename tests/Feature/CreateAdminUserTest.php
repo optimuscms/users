@@ -22,7 +22,7 @@ class CreateAdminUserTest extends TestCase
     public function it_can_create_an_admin_user()
     {
         $response = $this->postJson(
-            route('admin.users.store'),
+            route('admin.api.users.store'),
             $data = $this->validData()
         );
 
@@ -52,7 +52,7 @@ class CreateAdminUserTest extends TestCase
     /** @test */
     public function there_are_required_fields()
     {
-        $response = $this->postJson(route('admin.users.store'));
+        $response = $this->postJson(route('admin.api.users.store'));
 
         $response
             ->assertStatus(422)
@@ -74,7 +74,7 @@ class CreateAdminUserTest extends TestCase
     public function the_email_field_must_be_a_valid_email_address()
     {
         $response = $this->postJson(
-            route('admin.users.store'),
+            route('admin.api.users.store'),
             $data = $this->validData([
                 'email' => 'not an email'
             ])
@@ -96,7 +96,7 @@ class CreateAdminUserTest extends TestCase
     public function the_password_field_must_be_at_least_6_characters()
     {
         $response = $this->postJson(
-            route('admin.users.store'),
+            route('admin.api.users.store'),
             $data = $this->validData([
                 'password' => 'short'
             ])
