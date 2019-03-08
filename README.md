@@ -23,30 +23,49 @@ In Laravel 5.4 you must install this service provider:
 ```
 
 
-## Usage
+## API Routes
 
-### Api routes
+The API follows standard RESTful conventions, with responses being returned in JSON. 
+Appropriate HTTP status codes are provided, and these should be used to check the outcome of an operation.
 
+**Users**
+ - [List users](#users-all)
+ - [Get user](#users-get)
+ - [Create user](#users-create)
+ - [Update user](#users-update)
+ - [Delete user](#users-delete)
+
+<a name="users-all"></a>
+### List users
+List all registered users
 ```http
 GET /admin/api/users
 ```
 
+<a name="users-create"></a>
+### Create user
+Create a new users who can access the CMS
 ```http
 POST /admin/api/users
 ```
 
+<a name="users-get"></a>
+### Get user
+Get the details of a specific user
 ```http
 GET /admin/api/users/{id}
 ```
 
-```http
-GET /admin/api/user
-```
-
+<a name="users-update"></a>
+### Update user
+Update the details of a particular user
 ```http
 PATCH /admin/api/users/{id}
 ```
 
+<a name="users-delete"></a>
+### Delete user
+Delete a user so they can no longer access the CMS
 ```http
 DELETE /admin/api/users/{id}
 ```
