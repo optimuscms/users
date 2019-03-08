@@ -1,10 +1,27 @@
 # Optimus Users
 
+This package provides the core backend functionality for managing the users who can access the CMS.
+
 ## Installation
+
+This package can be installed through Composer.
 
 ```bash
 composer require optimuscms/users
 ```
+
+In Laravel 5.5 and above the package will autoregister the service provider. 
+
+In Laravel 5.4 you must install this service provider:
+```php
+// config/app.php
+'providers' => [
+    ...
+    Optimus\Users\UserServiceProvider::class,
+    ...
+];
+```
+
 
 ## Usage
 
