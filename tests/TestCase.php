@@ -14,7 +14,7 @@ class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->withFactories(
-            __DIR__ . '/../database/factories'
+            __DIR__ . '/database/factories'
         );
     }
 

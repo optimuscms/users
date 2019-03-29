@@ -156,7 +156,7 @@ None
 
 **Example Response**
 
-The HTTP status code will be 204 if successful.
+The HTTP status code will be `204` if successful.
 
 ## License
 
