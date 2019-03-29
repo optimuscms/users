@@ -10,27 +10,49 @@ use Optimus\Users\Http\Resources\AdminUserResource;
 
 class AdminUsersController extends Controller
 {
+    /**
+     * Display a list of users.
+     *
+     * @return \Illuminate\Http\Resources\Json\ResourceCollection
+     */
     public function index()
     {
-        $users = AdminUser::all();
+        $users = AdminUser::orderBy('name')->get();
 
         return AdminUserResource::collection($users);
     }
 
+    /**
+     * Create a new user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Resources\Json\JsonResource
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function store(Request $request)
     {
         $this->validateUser($request);
 
-        $user = AdminUser::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'username' => $request->input('username'),
-            'password' => bcrypt($request->input('password'))
-        ]);
+        $user = new AdminUser();
+
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->username = $request->input('username');
+        $user->password = bcrypt($request->input('password'));
+
+        $user->save();
 
         return new AdminUserResource($user);
     }
 
+    /**
+     * Display the specified user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int|null  $id
+     * @return \Illuminate\Http\Resources\Json\JsonResource
+     */
     public function show(Request $request, $id = null)
     {
         $user = $id
@@ -40,17 +62,24 @@ class AdminUsersController extends Controller
         return new AdminUserResource($user);
     }
 
+    /**
+     * Update the specified user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Resources\Json\JsonResource
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function update(Request $request, $id)
     {
         $user = AdminUser::findOrFail($id);
 
         $this->validateUser($request, $user);
 
-        $user->fill([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'username' => $request->input('username')
-        ]);
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->username = $request->input('username');
 
         if ($request->filled('password')) {
             $user->password = bcrypt($request->input('password'));
@@ -61,13 +90,28 @@ class AdminUsersController extends Controller
         return new AdminUserResource($user);
     }
 
+    /**
+     * Delete the specified user.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
         AdminUser::findOrFail($id)->delete();
 
-        return response(null, 204);
+        return response()->noContent();
     }
 
+    /**
+     * Validate the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Optimus\Users\Models\AdminUser|null  $user
+     * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
     protected function validateUser(Request $request, AdminUser $user = null)
     {
         $request->validate([
